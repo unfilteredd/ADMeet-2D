@@ -1,0 +1,24 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ADMeet: 2D Video Room</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- The virtual room -->
+  <div id="arena">
+    <div class="table">ADMeet</div>
+
+  </div>
+
+  <!-- Local and remote video elements -->
+  <video id="localVideo" autoplay muted></video>
+  <div id="remoteVideos"></div>
+
+  <!-- Include Socket.IO and our script -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
