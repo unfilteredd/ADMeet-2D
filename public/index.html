@@ -13,10 +13,18 @@
 
   </div>
 
+  <!-- HTML: Audio/Video controls -->
+<div id="controls">
+  <button id="toggleAudio">🔇 Mute</button>
+  <button id="toggleVideo">📹 Stop Video</button>
+</div>
+
+
   <!-- Local and remote video elements -->
   <video id="localVideo" autoplay muted></video>
   <div id="remoteVideos"></div>
 
+  
   <!-- Include Socket.IO and our script -->
   <script src="/socket.io/socket.io.js"></script>
   <script src="script.js"></script>

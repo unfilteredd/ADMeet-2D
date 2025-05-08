@@ -50,6 +50,46 @@ body {
   }
   
   
+  /* CSS: Position the control bar */
+#controls {
+  position: fixed;
+  bottom: 10px; left: 10px;
+  background: rgba(255,255,255,0.8);
+  padding: 5px 10px;
+  border-radius: 8px;
+  z-index: 1000;
+}
+#controls button {
+  font-size: 16px;
+  margin-right: 8px;
+  padding: 6px 12px;
+}
+
+
+/* Position status icons at top-right corner of avatar */
+.status-icon {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  border-radius: 50%;
+  padding: 2px;
+  font-size: 14px;
+  pointer-events: none;
+}
+.player {
+  position: relative; /* Make this container for positioning */
+  display: inline-block;
+  margin: 8px;
+}
+.player img.avatar {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+}
+
+
+
   /* Avatar styling */
   .avatar {
     position: absolute;
@@ -74,13 +114,14 @@ body {
     background-color: #e74c3c;
   }
   
+  
   /* Local Video Styling */
   #localVideo {
     position: fixed;
-    bottom: 20px;
-    left: 20px;
-    width: 160px;
-    height: 120px;
+    bottom: 55px;
+    left: 30px;
+    width: 200px;
+    height: 160px;
     border: 2px solid #999;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);

@@ -21,6 +21,8 @@ socket.on('connect', () => {
   myId = socket.id;
 });
 
+
+
 // Initialize existing players (positions) when joining
 socket.on('initPlayers', (serverPlayers) => {
   for (const id in serverPlayers) {
@@ -30,6 +32,7 @@ socket.on('initPlayers', (serverPlayers) => {
     addAvatar(id, x, y);
   }
 });
+
 
 socket.on('initSelf', pos => {
     players[socket.id] = { x: pos.x, y: pos.y };
@@ -44,6 +47,74 @@ socket.on('newPlayer', (player) => {
   players[player.id] = { x: player.x, y: player.y };
   addAvatar(player.id, player.x, player.y);
 });
+
+
+// JavaScript: Toggle local audio/video tracks
+const audioBtn = document.getElementById('toggleAudio');
+const videoBtn = document.getElementById('toggleVideo');
+  
+audioBtn.onclick = () => {
+  const audioTrack = localStream.getAudioTracks()[0];
+  audioTrack.enabled = !audioTrack.enabled;
+  audioBtn.textContent = audioTrack.enabled ? '🔇 Mute' : '🔊 Unmute';
+  // Notify peers of new state
+  socket.emit('toggle-audio', { enabled: audioTrack.enabled });
+};
+  
+videoBtn.onclick = () => {
+  const videoTrack = localStream.getVideoTracks()[0];
+  videoTrack.enabled = !videoTrack.enabled;
+  videoBtn.textContent = videoTrack.enabled ? '📹 Stop Video' : '🎥 Start Video';
+  socket.emit('toggle-video', { enabled: videoTrack.enabled });
+};
+
+
+
+
+// In server socket handling (e.g. socket.js)
+socket.on('toggle-audio', data => {
+  socket.broadcast.emit('player-audio', { id: socket.id, enabled: data.enabled });
+});
+socket.on('toggle-video', data => {
+  socket.broadcast.emit('player-video', { id: socket.id, enabled: data.enabled });
+});
+
+
+// When another player toggles audio/video
+socket.on('player-audio', data => {
+  const playerDiv = document.getElementById(data.id);
+  if (!playerDiv) return;
+  let icon = playerDiv.querySelector('.status-icon.muted-audio');
+  if (!data.enabled) {
+    // Add muted-mic icon
+    if (!icon) {
+      icon = document.createElement('span');
+      icon.textContent = '🔇';  // Muted microphone emoji
+      icon.className = 'status-icon muted-audio';
+      playerDiv.appendChild(icon);
+    }
+  } else {
+    // Remove muted-mic icon
+    if (icon) playerDiv.removeChild(icon);
+  }
+});
+socket.on('player-video', data => {
+  const playerDiv = document.getElementById(data.id);
+  if (!playerDiv) return;
+  let icon = playerDiv.querySelector('.status-icon.muted-video');
+  if (!data.enabled) {
+    if (!icon) {
+      icon = document.createElement('span');
+      icon.textContent = '🚫';  // Video-off emoji
+      icon.className = 'status-icon muted-video';
+      playerDiv.appendChild(icon);
+    }
+  } else {
+    if (icon) playerDiv.removeChild(icon);
+  }
+});
+
+
 
 // When another player moves
 socket.on('playerMoved', (player) => {
