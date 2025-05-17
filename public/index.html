@@ -1,4 +1,3 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,26 +6,46 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- The virtual room -->
   <div id="arena">
-    <div class="table">ADMeet</div>
+    <!-- Office Layout -->
+    <div class="room meeting-room">Meeting Room</div>
+    <div class="room private-room">Private Room</div>
+<div class="room conference-room">Conference Room</div>
+<div class="entrance entrance-meeting"></div>
+<div class="entrance entrance-private"></div>
+<div class="entrance entrance-conference"></div>
 
   </div>
 
-  <!-- HTML: Audio/Video controls -->
-<div id="controls">
-  <button id="toggleAudio">🔇 Mute</button>
-  <button id="toggleVideo">📹 Stop Video</button>
+  <div id="mobile-controls" style="display: none;">
+  <div class="dpad-row">
+    <button id="upBtn">⬆️</button>
+  </div>
+  <div class="dpad-row">
+    <button id="leftBtn">⬅️</button>
+    <button id="downBtn">⬇️</button>
+    <button id="rightBtn">➡️</button>
+  </div>
 </div>
 
 
-  <!-- Local and remote video elements -->
+
+  <div id="controls">
+    <button id="toggleAudio">🔇 Mute</button>
+    <button id="toggleVideo">📹 Stop Video</button>
+    <button id="startShare">📺 Share Screen</button>
+    <button id="stopShare" style="display:none;">❌ Stop Sharing</button>
+  </div>
+
   <video id="localVideo" autoplay muted></video>
   <div id="remoteVideos"></div>
-
+  <div id="screenShareContainer"></div>
   
-  <!-- Include Socket.IO and our script -->
+
   <script src="/socket.io/socket.io.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
+
+
+<!-- issues: screenshare size increase. entry through entrance. mobile support-->

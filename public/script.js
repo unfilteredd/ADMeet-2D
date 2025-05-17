@@ -9,6 +9,55 @@ const remoteVideos = document.getElementById('remoteVideos');
 const localVideo = document.getElementById('localVideo');
 let localStream = null;
 
+let screenStream = null;
+
+const shareBtn = document.getElementById('startShare');
+const stopShareBtn = document.getElementById('stopShare');
+
+shareBtn.onclick = async () => {
+  try {
+    screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+    for (const id in peers) {
+      const sender = peers[id].pc.getSenders().find(s => s.track.kind === 'video');
+      if (sender && screenStream.getVideoTracks()[0]) {
+        sender.replaceTrack(screenStream.getVideoTracks()[0]);
+      }
+    }
+
+    const videoEl = document.createElement('video');
+    videoEl.srcObject = screenStream;
+    videoEl.autoplay = true;
+    document.getElementById('screenShareContainer').innerHTML = '';
+    document.getElementById('screenShareContainer').appendChild(videoEl);
+
+    shareBtn.style.display = 'none';
+    stopShareBtn.style.display = 'inline';
+  } catch (e) {
+    console.error('Screen share error:', e);
+  }
+};
+
+stopShareBtn.onclick = () => {
+  if (!screenStream) return;
+
+  const track = screenStream.getVideoTracks()[0];
+  track.stop();
+  screenStream = null;
+
+  for (const id in peers) {
+    const sender = peers[id].pc.getSenders().find(s => s.track.kind === 'video');
+    if (sender && localStream.getVideoTracks()[0]) {
+      sender.replaceTrack(localStream.getVideoTracks()[0]);
+    }
+  }
+
+  document.getElementById('screenShareContainer').innerHTML = '';
+  shareBtn.style.display = 'inline';
+  stopShareBtn.style.display = 'none';
+};
+
+
+
 // Get local media (camera + mic)
 navigator.mediaDevices.getUserMedia({ video: true, audio: true })
   .then(stream => {
@@ -180,16 +229,29 @@ socket.on('ice-candidate', async (data) => {
   }
 });
 
+
+
 // DOM: add avatar element
+
 function addAvatar(id, x, y) {
   const el = document.createElement('div');
   el.id = id;
   el.className = 'avatar' + (id === myId ? ' myAvatar' : '');
-  el.textContent = id.substring(0, 3); // show first 3 chars of ID
+
+  // Randomly assign an emoji from the pool
+ 
+  const emojis = ['👩‍💼', '👨‍💻', '🧑‍🚀', '👩‍🎨'];
+el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+el.style.fontSize = '36px';
+el.style.lineHeight = '48px';
+el.style.textAlign = 'center';
+
+
   el.style.left = x + 'px';
   el.style.top = y + 'px';
   arena.appendChild(el);
 }
+
 
 // Move an existing avatar element
 function moveAvatar(id, x, y) {
@@ -276,6 +338,36 @@ function startCall(id) {
     .catch(err => console.error('Offer error:', err));
 }
 
+
+function isMobile() {
+  return /Mobi|Android/i.test(navigator.userAgent);
+}
+
+if (isMobile()) {
+  document.getElementById('mobile-controls').style.display = 'block';
+
+  document.getElementById('upBtn').addEventListener('click', () => moveAvatarDirection(0, -5));
+  document.getElementById('downBtn').addEventListener('click', () => moveAvatarDirection(0, 5));
+  document.getElementById('leftBtn').addEventListener('click', () => moveAvatarDirection(-5, 0));
+  document.getElementById('rightBtn').addEventListener('click', () => moveAvatarDirection(5, 0));
+}
+
+function moveAvatarDirection(dx, dy) {
+  if (!players[socket.id]) return;
+  const pos = players[socket.id];
+  const newX = pos.x + dx;
+  const newY = pos.y + dy;
+
+  players[socket.id] = { x: newX, y: newY };
+  moveAvatar(socket.id, newX, newY);
+  socket.emit('move', { x: newX, y: newY });
+  checkProximity();
+}
+document.querySelectorAll('#mobile-controls button').forEach(btn => {
+  btn.addEventListener('touchstart', e => e.preventDefault());
+});
+
+
 // Handle keyboard movement (WASD)
 let myX = 0, myY = 0;  // these will be set on 'initSelf'
 const speed = 5;
@@ -294,3 +386,4 @@ document.addEventListener('keydown', (e) => {
   socket.emit('move', { x: myX, y: myY });
   checkProximity();
 });
+
