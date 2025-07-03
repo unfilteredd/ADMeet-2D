@@ -10,9 +10,9 @@ A 2D proximity-based video meeting web app that recreates real-life interactions
 
 ---
 
-## 📌 What is ADMeet-2D?
+## 📌 What is MetaVerse-2D?
 
-ADMeet-2D is a browser-based platform where users appear as avatars in a shared 2D space. As users move closer to others, video and audio chats are automatically triggered — simulating real-world social proximity.
+MetaVerse-2D is a browser-based platform where users appear as avatars in a shared 2D space. As users move closer to others, video and audio chats are automatically triggered — simulating real-world social proximity.
 
 Ideal for:
 - Online networking
