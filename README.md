@@ -1,4 +1,4 @@
-# ADMeet-2D 🎮💬  
+# MetaVerse-2D 🎮💬  
 A 2D proximity-based video meeting web app that recreates real-life interactions in a virtual space.
 
 > 🧠 Built from scratch using JavaScript, Socket.IO, and WebRTC — No frameworks.
